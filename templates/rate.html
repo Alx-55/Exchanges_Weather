@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Курс UAH к USDT</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f7f7f7;
+        }
+        .binance-header {
+            color: #f3ba2f; /* фирменный жёлтый Binance */
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .rate {
+            font-size: 28px;
+        }
+        .timestamp {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="binance-header">Binance</div>
+    <div class="rate">
+        Текущий курс: <span id="rate">Загрузка...</span> UAH за 1 USDT
+    </div>
+    <div class="timestamp">
+        Последнее обновление: <span id="last-updated">—</span>
+    </div>
+
+    <script>
+        function formatDateTime(date) {
+            return date.toLocaleString('uk-UA', {
+                hour12: false
+            });
+        }
+
+        async function fetchRate() {
+            try {
+                const response = await fetch("/rate");
+                const data = await response.json();
+                document.getElementById("rate").textContent = data.rate;
+                document.getElementById("last-updated").textContent = formatDateTime(new Date());
+            } catch (error) {
+                document.getElementById("rate").textContent = "Ошибка загрузки";
+                document.getElementById("last-updated").textContent = "—";
+            }
+        }
+
+        fetchRate();
+        setInterval(fetchRate, 60000); // обновление каждую минуту
+    </script>
+</body>
+</html>
+
+
+
