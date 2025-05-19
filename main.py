@@ -68,6 +68,7 @@ from fastapi.responses import JSONResponse
 import httpx
 
 app = FastAPI()
+
 templates = Jinja2Templates(directory="templates")
 
 OPENWEATHER_API_KEY = "99e09229e133cd3639c708fe595a930b"  # Замени на свой ключ
