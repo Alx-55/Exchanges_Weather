@@ -1,64 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
-    <title>Курс UAH к USDT</title>
     <meta charset="UTF-8">
+    <title>Курс USDT та Погода</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             text-align: center;
-            margin-top: 50px;
-            background-color: #f7f7f7;
+            padding: 40px;
         }
-        .binance-header {
-            color: #f3ba2f; /* фирменный жёлтый Binance */
+        .header {
             font-size: 32px;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
-        .rate {
-            font-size: 28px;
+        .binance {
+            color: #f3ba2f;
         }
-        .timestamp {
-            margin-top: 10px;
-            font-size: 16px;
-            color: #555;
+        .rate, .timestamp, .weather-time {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        th, td {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            font-size: 18px;
+        }
+        th {
+            background-color: #eaeaea;
         }
     </style>
 </head>
 <body>
-    <div class="binance-header">Binance</div>
+
+    <!-- Binance Курс -->
+    <div class="header binance">Binance</div>
     <div class="rate">
-        Текущий курс: <span id="rate">Загрузка...</span> UAH за 1 USDT
+        Курс: <span id="rate">Загрузка...</span> UAH за 1 USDT
     </div>
     <div class="timestamp">
-        Последнее обновление: <span id="last-updated">—</span>
+        Оновлено: <span id="last-updated">—</span>
+    </div>
+
+    <!-- Погода -->
+    <div class="header" style="margin-top: 40px;">Погода</div>
+    <table id="weather-table">
+        <thead>
+            <tr>
+                <th>Місто</th>
+                <th>Температура (°C)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="2">Завантаження...</td></tr>
+        </tbody>
+    </table>
+    <div class="weather-time">
+        Оновлено: <span id="weather-updated">—</span>
     </div>
 
     <script>
         function formatDateTime(date) {
-            return date.toLocaleString('uk-UA', {
-                hour12: false
-            });
+            return date.toLocaleString('uk-UA', { hour12: false });
         }
 
         async function fetchRate() {
             try {
-                const response = await fetch("/rate");
-                const data = await response.json();
+                const res = await fetch("/rate");
+                const data = await res.json();
                 document.getElementById("rate").textContent = data.rate;
                 document.getElementById("last-updated").textContent = formatDateTime(new Date());
-            } catch (error) {
-                document.getElementById("rate").textContent = "Ошибка загрузки";
+            } catch {
+                document.getElementById("rate").textContent = "Помилка";
                 document.getElementById("last-updated").textContent = "—";
             }
         }
 
+        async function fetchWeather() {
+            try {
+                const res = await fetch("/weather");
+                const data = await res.json();
+                const tbody = document.querySelector("#weather-table tbody");
+                tbody.innerHTML = "";
+                for (const [city, temp] of Object.entries(data.temps)) {
+                    tbody.innerHTML += `<tr><td>${city}</td><td>${temp}</td></tr>`;
+                }
+                document.getElementById("weather-updated").textContent = formatDateTime(new Date());
+            } catch {
+                const tbody = document.querySelector("#weather-table tbody");
+                tbody.innerHTML = "<tr><td colspan='2'>Помилка завантаження</td></tr>";
+                document.getElementById("weather-updated").textContent = "—";
+            }
+        }
+
         fetchRate();
-        setInterval(fetchRate, 60000); // обновление каждую минуту
+        fetchWeather();
+        setInterval(fetchRate, 60000);        // обновление курса каждую минуту
+        setInterval(fetchWeather, 900000);    // обновление погоды каждые 15 минут
     </script>
 </body>
 </html>
+
+
+
+
 
 
 
