@@ -15,8 +15,9 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
-        .binance {
+        .binance a {
             color: #f3ba2f;
+            text-decoration: none;
         }
         .rate, .timestamp, .weather-time {
             font-size: 20px;
@@ -36,12 +37,18 @@
         th {
             background-color: #eaeaea;
         }
+        a {
+            color: #000;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
     <!-- Binance Курс -->
-    <div class="header binance">Binance</div>
+    <div class="header binance">
+        <a href="/image?name=Binance.png" target="_blank">Binance</a>
+    </div>
     <div class="rate">
         Курс: <span id="rate">Загрузка...</span> UAH за 1 USDT
     </div>
@@ -90,7 +97,20 @@
                 const tbody = document.querySelector("#weather-table tbody");
                 tbody.innerHTML = "";
                 for (const [city, temp] of Object.entries(data.temps)) {
-                    tbody.innerHTML += `<tr><td>${city}</td><td>${temp}</td></tr>`;
+                    const imgExtensions = [".png", ".jpg", ".jpeg"];
+                    let found = false;
+                    for (let ext of imgExtensions) {
+                        const testPath = `/static/${city}${ext}`;
+                        const exists = await fetch(testPath, { method: 'HEAD' });
+                        if (exists.ok) {
+                            tbody.innerHTML += `<tr><td><a href="/image?name=${city}${ext}" target="_blank">${city}</a></td><td>${temp}</td></tr>`;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        tbody.innerHTML += `<tr><td>${city}</td><td>${temp}</td></tr>`;
+                    }
                 }
                 document.getElementById("weather-updated").textContent = formatDateTime(new Date());
             } catch {
@@ -107,6 +127,7 @@
     </script>
 </body>
 </html>
+
 
 
 

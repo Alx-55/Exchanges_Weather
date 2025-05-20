@@ -66,8 +66,13 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 import httpx
+from fastapi.staticfiles import StaticFiles  # подключаем static/
+from fastapi.responses import RedirectResponse
+
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")  # подключаем static/
 
 templates = Jinja2Templates(directory="templates")
 
@@ -127,3 +132,15 @@ async def get_weather():
         return JSONResponse(content={"temps": temps})
     except Exception:
         return JSONResponse(content={"temps": {}, "error": "Ошибка загрузки"}, status_code=500)
+
+
+@app.get("/image")
+async def show_image(request: Request, name: str):
+    # name — это например Binance.png или Москва.jpg
+    image_url = f"/static/{name}"
+    return templates.TemplateResponse("image.html", {
+        "request": request,
+        "image_url": image_url,
+        "title": name.split('.')[0]
+    })
+

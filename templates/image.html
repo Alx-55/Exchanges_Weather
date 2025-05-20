@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Зображення</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 40px;
+        }
+        img {
+            max-width: 60%;
+            height: auto;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <h2>{{ title }}</h2>
+    <img src="{{ image_url }}" alt="{{ title }}">
+</body>
+</html>
+
