@@ -88,7 +88,8 @@ cities = {
     "Калгари": "Calgary,CA",
     "Инсбург": "Innsbruck,AT",
     "Хабаровск": "Khabarovsk,RU",
-    "Пермь": "Perm,RU"
+    "Пермь": "Perm,RU",
+    "Иркутск": "Irkutsk,RU"
 }
 
 
